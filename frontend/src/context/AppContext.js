@@ -8,8 +8,9 @@ export const AppProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
 
   const addResult = (result) => {
-    setHistory([result, ...history.slice(0, 4)]);
-    setCount(count + 1);
+    const withTimestamp = { ...result, timestamp: result.timestamp || Date.now() };
+    setHistory((prev) => [withTimestamp, ...prev].slice(0, 5));
+    setCount((c) => c + 1);
   };
 
   return (
