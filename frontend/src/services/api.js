@@ -1,21 +1,42 @@
-export const classifyWaste = async (item) => {
-  const response = await fetch("http://localhost:5000/api/waste/classify", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ item }),
-  });
+export const classifyWaste = async (item, timeout = 10000) => {
+  const base = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+  const url = `${base}/api/waste/classify`;
 
-  const data = await response.json();
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
-  if (!response.ok) {
-    throw new Error(data.message || "Something went wrong");
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item }),
+      signal: controller.signal,
+    });
+
+    const text = await response.text();
+    clearTimeout(id);
+
+    let data;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch (e) {
+      // backend may return { result: "{...}" }
+      try {
+        const wrapped = JSON.parse(text || "{}");
+        if (wrapped.result) data = JSON.parse(wrapped.result);
+        else data = wrapped;
+      } catch (e2) {
+        throw new Error("Invalid JSON from server");
+      }
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || `Request failed (${response.status})`);
+    }
+
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError") throw new Error("Request timed out");
+    throw err;
   }
-
-  // 🔥 If backend sends { result: "json string" }
-  if (data.result) {
-    return JSON.parse(data.result);
-  }
-
-  // 🔥 If backend already sends parsed JSON
-  return data;
 };

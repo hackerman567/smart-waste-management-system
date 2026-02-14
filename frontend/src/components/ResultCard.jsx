@@ -1,11 +1,36 @@
+import { useState } from "react";
+
 const ResultCard = ({ result }) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyAdvice = async () => {
+    if (!result?.advice) return;
+    try {
+      await navigator.clipboard.writeText(result.advice);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {
+      // ignore
+    }
+  };
+
   return (
     <div className="result-card">
-      <h3>Result</h3>
-      <p><strong>Item:</strong> {result.item}</p>
-      <p><strong>Type:</strong> {result.type}</p>
-      <p><strong>Advice:</strong> {result.advice}</p>
-      <p><strong>Carbon Impact:</strong> {result.carbonImpact}</p>
+      <div className="result-card__header">
+        <h3>Classification</h3>
+        <small className="result-card__time">{result.timestamp ? new Date(result.timestamp).toLocaleString() : ""}</small>
+      </div>
+
+      <div className="result-card__body">
+        <div className="result-row"><strong>Item:</strong> <span>{result.item || "—"}</span></div>
+        <div className="result-row"><strong>Type:</strong> <span className={`badge badge--${(result.type||"unknown").toLowerCase()}`}>{result.type || "Unknown"}</span></div>
+        <div className="result-row"><strong>Carbon Impact:</strong> <span>{result.carbonImpact || "—"}</span></div>
+        <div className="result-row"><strong>Advice:</strong> <span>{result.advice || "—"}</span></div>
+      </div>
+
+      <div className="result-card__actions">
+        <button className="btn btn--small" onClick={copyAdvice}>{copied ? "Copied" : "Copy Advice"}</button>
+      </div>
     </div>
   );
 };
