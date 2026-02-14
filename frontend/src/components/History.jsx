@@ -21,20 +21,13 @@ const History = () => {
     <div className="history">
       <h3>Recent Classifications</h3>
       {history.length === 0 ? (
-        <p className="muted">No classifications yet. Start by classifying a waste item above!</p>
+        <p className="muted">No classifications yet.</p>
       ) : (
         <ul className="history__list">
           {history.map((item, index) => (
             <li key={index} className="history__item">
-              <div className="history__main">
-                <span className="history__item-name">{item.item}</span>
-                <span className={`history__type badge badge--${getTypeColor(item.type)}`}>
-                  {item.type}
-                </span>
-              </div>
-              <div className="history__time">
-                {item.timestamp ? new Date(item.timestamp).toLocaleTimeString() : ""}
-              </div>
+              <div className="history__main">{item.item} <span className="history__type">→ {item.type}</span></div>
+              <div className="history__time">{item.timestamp ? new Date(item.timestamp).toLocaleTimeString() : ""}</div>
             </li>
           ))}
         </ul>

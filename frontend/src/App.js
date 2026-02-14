@@ -4,28 +4,24 @@ import Stats from "./components/Stats";
 import ThemeToggle from "./components/ThemeToggle";
 import { useContext } from "react";
 import { AppContext } from "./context/AppContext";
+import wasteImage from "./waste.png";
 
 function App() {
   const { darkMode } = useContext(AppContext);
 
   return (
-    <div className={`app ${darkMode ? "dark" : "light"}`}>
-      <div className="app__container">
-        <header className="app__header">
+    <div className={darkMode ? "dark" : "light"}>
+      <div className="main-layout">
+        <div className="main-content">
           <ThemeToggle />
           <h1>🌱 Smart Waste Management System</h1>
-          <p className="app__subtitle">Classify your waste items and get disposal recommendations</p>
-        </header>
-        
-        <main className="app__main">
           <Stats />
           <WasteForm />
           <History />
-        </main>
-        
-        <footer className="app__footer">
-          <p>🌍 Together we can make a difference in waste management!</p>
-        </footer>
+        </div>
+        <div className="side-image">
+          <img src={wasteImage} alt="Waste Management" />
+        </div>
       </div>
     </div>
   );
