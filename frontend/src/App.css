@@ -1,0 +1,13 @@
+.light {
+  background: #f4f6f8;
+  color: black;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dark {
+  background: #121212;
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+}
